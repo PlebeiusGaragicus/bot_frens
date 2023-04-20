@@ -11,7 +11,7 @@ process.on("SIGINT", closeApp);
 process.on("SIGTERM", closeApp);
 
 process.on('uncaughtException', (error) => {
-    logger.log(" ++++++++++ uncaught exception ++++++++++ ");
+    logger.error(" ++++++++++ uncaught exception ++++++++++ ");
     logger.error(error);
 });
 

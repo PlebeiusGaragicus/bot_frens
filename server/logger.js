@@ -1,10 +1,11 @@
-// TODO: I might want these logs to NOT be appended...?  Also... what about 'rolling' the logs.. or cycling..?  Forgot what it's called.
-
 import winston from 'winston';
 
+const stringifyObject = (message) => {
+    return typeof message === 'object' ? JSON.stringify(message, null, 2) : message;
+};
 
 const consoleFormat = winston.format.printf(({ timestamp, level, message, stack }) => {
-    const formattedMessage = stack ? stack : message;
+    const formattedMessage = stack ? stack : stringifyObject(message);
     return `[${timestamp}] ${level}: ${formattedMessage}`;
 });
 
@@ -42,9 +43,62 @@ const logger = winston.createLogger({
     ]
 });
 
-
 export default logger;
 
+
+
+
+// TODO: I might want these logs to NOT be appended...?  Also... what about 'rolling' the logs.. or cycling..?  Forgot what it's called.
+
+
+// BEGIN OLD CODE
+// import winston from 'winston';
+
+
+// const consoleFormat = winston.format.printf(({ timestamp, level, message, stack }) => {
+//     const formattedMessage = stack ? stack : message;
+//     return `[${timestamp}] ${level}: ${formattedMessage}`;
+// });
+
+// const fileFormat = winston.format.combine(
+//     winston.format.uncolorize(),
+//     winston.format.timestamp(),
+//     winston.format.errors({ stack: true }),
+//     winston.format.json()
+// );
+
+// const logger = winston.createLogger({
+//     level: 'debug',
+//     format: winston.format.combine(
+//         winston.format.timestamp(),
+//         winston.format.errors({ stack: true }),
+//         winston.format.splat(),
+//         consoleFormat
+//     ),
+//     transports: [
+//         new winston.transports.Console({
+//             format: winston.format.combine(
+//                 winston.format.colorize(),
+//                 consoleFormat
+//             )
+//         }),
+//         new winston.transports.File({ filename: './logs/error.log', level: 'error', format: fileFormat }),
+//         new winston.transports.File({ filename: `./logs/errors-${Date.now()}.log`, level: 'error', format: fileFormat, options: { flags: 'w' } }),
+
+//         new winston.transports.File({ filename: './logs/all_runs_combined.log', format: fileFormat }),
+//         new winston.transports.File({ filename: `./logs/run_log-${Date.now()}.log`, format: fileFormat, options: { flags: 'w' } })
+//     ],
+//     exceptionHandlers: [
+//         new winston.transports.Console({ format: consoleFormat }),
+//         new winston.transports.File({ filename: './logs/exceptions.log', format: fileFormat })
+//     ]
+// });
+
+
+// export default logger;
+
+
+// END OLD CODE
 
 
 /*

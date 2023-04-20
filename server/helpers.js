@@ -45,23 +45,24 @@ export async function checkENV() {
 }
 
 
-// let closingInProgress = false;
+let closingInProgress = false;
 //NOTE: TODO: we have to ensure that every possible exception is covered in try{} blocks or else the app will not close...
 export async function closeApp() {
     // NOTE: there was once an uncaught exception that prevented the app from closing.  Next time I pressed Control-C this code prevented closeApp() from running...
-    // if (closingInProgress) {
-    //     console.log("App is already closing. Ignoring signal.");
-    //     return;
-    // }
+    if (closingInProgress) {
+        logger.info("App is already closing. Ignoring signal.");
+        return;
+    }
 
-    // closingInProgress = true;
-    console.log("Closing app...");
+    closingInProgress = true;
+
+    logger.info("Closing app...");
     try {
         await killBot();
         logger.info("Closed app successfully");
         process.exit(0);
     } catch (error) {
-        logger.error("Error closing app: ", error);
+        logger.error(`Error closing app: ${error}`);
         process.exit(1);
     }
 }
