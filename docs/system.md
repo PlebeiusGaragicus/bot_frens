@@ -32,6 +32,11 @@ Remember that the chatbot should maintain a light and friendly tone, asking foll
 
 
 
+# non judgemental listening cycle
+# relction of content / reflection of emotion / reflectio of meaninn
+
+
+
 ---
 
 
