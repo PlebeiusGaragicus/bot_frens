@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { Configuration, OpenAIApi } from "openai";
 
 import logger from './logger.js';
@@ -63,6 +64,9 @@ async function sendPrompt(prompt, temperature = 0.5, max_tokens = 750) {
 export async function handleUserMessage(ctx) {
     logger.info(`handleUserMessage() - FROM: ${ctx.from.username} User ID: ${ctx.from.id}: ${ctx.message.text}`);
 
+    // ctx.replyWithChatAction('typing');
+    // ctx.sendChatAction('typing');]
+
     const userMessage = ctx.message.text;
 
     const filterPrompt = `SPEAKER: ${userMessage}\n${prompt.filter}`;
@@ -85,6 +89,52 @@ export async function handleUserMessage(ctx) {
     if (coheranceReply === null) {
         ctx.reply("I'm sorry, but I'm unable to respond at the moment.");
         return;
+    }
+
+    // Save conversation to a file
+    const currentTime = Math.floor(Date.now() / 1000);
+    const fileName = `reply_${currentTime}.md`;
+    const chatFolder = `./chat-log/${ctx.from.id}`;
+    const conversationData = `
+# filterPrompt:
+
+${filterPrompt}
+
+---
+
+## filterReply:
+
+${filterReply}
+
+
+# augmentPrompt:
+
+${augmentPrompt}
+
+---
+
+## augmentReply:
+
+${augmentReply}
+
+
+# coherencePrompt:
+
+${coherancePrompt}
+
+---
+
+## coherenceReply:
+
+${coheranceReply}
+`;
+
+
+    try {
+        await fs.promises.mkdir(chatFolder, { recursive: true });
+        await fs.promises.writeFile(`${chatFolder}/${fileName}`, conversationData);
+    } catch (err) {
+        logger.error(err);
     }
 
 
